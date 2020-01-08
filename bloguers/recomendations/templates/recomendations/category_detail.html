@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+{% block title %}Recomendaciones{% endblock %}
+{% block title_pag %}{% endblock %}
+{% block description %}{% endblock %}
+{% block content %}
+{% include "recomendations/includes/recomendation_menu.html" %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <h1>Recomendaciones en <i style="color:
+        {% for key, value in values.items %}
+         {% if key == randint %}
+          {{value}}
+         {% endif %}
+        {% endfor %}">{{object.name}} </i></h1>
+        
+
+        {% for obj in category %}
+          {% if obj.name == object.name %}
+            {% for recomend in obj.get_category.all %}
+            <p>{{forloop.counter}}° -
+              {% for state in recomend.state.all %}
+                {% if state|slugify == 'visto' %}
+                  <b style="color:green">{{recomend.name}} </b> - <a href="{% url 'recomend:state' state.id state.name|slugify %}" class="link" style="text-decoration:none"> ¡Visto! </a>
+                {% else %}
+                  <b style="color:red">{{recomend.name}} </b> - <a href="{% url 'recomend:state' state.id state.name|slugify %}" class="link" style="text-decoration:none"> Por ver </a>
+                {% endif %}
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Categorizado en; <i>
+                {% for categories in recomend.categories.all %}
+                  <a href="{% url 'recomend:category' categories.id categories.name|slugify %}" class="link" style="text-decoration:none">{{categories.name}}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                </i>
+                {% if user.is_authenticated  %}
+                  <br><a href="{% url 'recomend:update' recomend.id %}">EDITAR</a> | <a href="{% url 'recomend:delete' recomend.id %}"> BORRAR </a></p>
+                {% endif %}
+              {% endfor %}
+            {% empty %}
+              <p>No se encontraron resultados para {{object.name}}</p>
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

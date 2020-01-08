@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+{% block title %}Recomendaciones{% endblock %}
+{% block title_pag %}{% endblock %}
+{% block description %}{% endblock %}
+{% block content %}
+{% include "recomendations/includes/recomendation_menu.html" %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <h1>Lista de Categorias</h1> 
+        {% for obj in object_list %}
+          <p>{{forloop.counter}}° - <b>{{obj.name}} </b> -
+          {% if user.is_authenticated  %}
+            <a href="{% url 'recomend:category_update' obj.id %}">EDITAR</a> | <a href="{% url 'recomend:category_delete' obj.id %}"> BORRAR </a>
+          {% endif %}
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% if is_paginated %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item ">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">&laquo;</a>
+          </li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+          <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li class="page-item ">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">&raquo;</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+{% endblock %}
